@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet" />
+    <title>Task Détail</title>
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+
+            <v-app-bar elevation="4" max-height="100" class="mb-7">
+                <v-app-bar-nav-icon></v-app-bar-nav-icon>
+                <v-toolbar-title>Modify</v-toolbar-title>
+            </v-app-bar>
+
+            <v-main>
+                <v-card max-width="800" class="mx-auto">
+                    <v-toolbar dark>
+                        <v-toolbar-title>Modifier la tache id : {{ id }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-text-field v-model="taskLabel" label="Tache" required></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" @click="Return()" text>
+                            Return
+                        </v-btn>
+                        <v-btn color="green darken-1" @click="ModifyTask()" text>
+                            Save
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+
+                <v-snackbar color="success" outlined v-model="snackbar" :timeout="timeout">
+                    {{ text }}
+                </v-snackbar>
+
+            </v-main>
+
+            <v-footer padless>
+                <v-col class="text-center" cols="12">
+                    {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
+                </v-col>
+            </v-footer>
+
+        </v-app>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        created() {
+            this.id = document.location.href.split('/')[4];
+            this.getTask(this.id);
+        },
+        data() {
+            return {
+                taskLabel: "",
+                id: "",
+                requestOptions: {
+                    method: 'GET',
+                    redirect: 'follow'
+                },
+                snackbar: false,
+                timeout: 2000,
+                text: '',
+            }
+        },
+        methods: {
+            getTask(id) {
+                fetch(`http://localhost:3000/api/task/show/${id}`, this.requestOptions)
+                    .then(response => response.json())
+                    .then(result => this.taskLabel = result.title)
+                    .catch(error => console.log('error', error));
+            },
+
+            Return() {
+                document.location.href = "/";
+            },
+
+            ModifyTask() {
+
+                var tabParams = [{
+                    champs: "id",
+                    value: this.id
+                }, {
+                    champs: "title",
+                    value: this.taskLabel
+                }]
+
+                fetch("/api/task/update", this.ConfigRequestPost(tabParams))
+                    .then(response => response.json())
+                    .then(result => console.log(result))
+                    .catch(error => console.log('error', error));
+                this.text = "la tache a été créée"
+                this.snackbar = true;
+                setTimeout(() => {
+                    document.location.href = "/";
+                }, 2000)
+            },
+
+            //take 1 params (array tabParams {champs, value})
+            //configuration for fetch for post
+            //return resquestOptions
+            ConfigRequestPost(tabParams = []) {
+                var myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+                var urlencoded = new URLSearchParams();
+
+                tabParams.forEach(
+                    element => urlencoded.append(element.champs, element.value)
+                );
+
+                var requestOptions = {
+                    method: 'POST',
+                    headers: myHeaders,
+                    body: urlencoded,
+                    redirect: 'follow'
+                };
+
+                return requestOptions;
+            },
+        },
+    })
+</script>
+
+</html>

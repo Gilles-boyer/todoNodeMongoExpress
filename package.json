@@ -1,0 +1,24 @@
+{
+    "name": "todonodemongoexpress",
+    "version": "1.0.0",
+    "description": "first project with node express and mongo",
+    "main": "index.js",
+    "scripts": {
+        "serve": "nodemon index"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Gilles-boyer/todoNodeMongoExpress.git"
+    },
+    "author": "Gilles BOYER",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Gilles-boyer/todoNodeMongoExpress/issues"
+    },
+    "homepage": "https://github.com/Gilles-boyer/todoNodeMongoExpress#readme",
+    "dependencies": {
+        "dotenv": "^16.0.0",
+        "express": "^4.17.3",
+        "mongoose": "^6.2.10"
+    }
+}

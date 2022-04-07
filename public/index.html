@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet" />
+    <title>ToDoList home</title>
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+
+            <v-app-bar elevation="4" max-height="100" class="mb-7">
+                <v-app-bar-nav-icon></v-app-bar-nav-icon>
+                <v-toolbar-title>Home</v-toolbar-title>
+            </v-app-bar>
+
+            <v-main>
+
+                <!--Card-->
+                <v-card max-width="800" class="mx-auto">
+                    <v-toolbar dark>
+                        <v-toolbar-title>Mes Taches</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn icon @click="OpenModalAdd">
+                            <v-icon>mdi-plus-circle</v-icon>
+                        </v-btn>
+                    </v-toolbar>
+
+                    <v-list>
+                        <v-list-item v-for="(folder, index) in folders" :key="folder._id">
+                            <v-list-item-content>
+                                <v-list-item-title v-text="folder.title"></v-list-item-title>
+
+                                <v-list-item-subtitle v-text="folder.date"></v-list-item-subtitle>
+                            </v-list-item-content>
+
+                            <v-list-item-action class="d-flex flex-row mb-6">
+                                <v-btn icon v-bind:href="/task/+ folder._id">
+                                    <v-icon color="grey darken-1">mdi-eye</v-icon>
+                                </v-btn>
+                                <v-btn icon @click="OpenModalModify(folder, index)">
+                                    <v-icon color="grey darken-1">mdi-cog</v-icon>
+                                </v-btn>
+                                <v-btn icon @click="OpenModalDelete(folder, index)">
+                                    <v-icon color="red darken-1">mdi-delete</v-icon>
+                                </v-btn>
+                            </v-list-item-action>
+                        </v-list-item>
+                    </v-list>
+                </v-card>
+
+                <!--Modal add and modify task-->
+                <v-dialog v-model="dialog" persistent max-width="600px">
+                    <v-card>
+                        <v-card-title>
+                            <span class="text-h5">{{ titleModalAddMod }}</span>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field v-model="taskLabel" label="Tache" required></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="grey darken-1" text @click="CloseModalAddModTask">
+                                Close
+                            </v-btn>
+                            <v-btn color="green darken-1" text @click="funtionValider">
+                                Save
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+
+                <!--Modal delete task-->
+                <v-dialog v-model="dialog2" persistent max-width="600px">
+                    <v-card>
+                        <v-card-title>
+                            <span class="text-h5">Supprimer une Tache</span>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="12">
+                                        Voulez vous vraiment supprimer la tache {{ taskDelete }} ?
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="grey darken-1" text @click="dialog2 = false">
+                                Close
+                            </v-btn>
+                            <v-btn color="red darken-1" text @click="functionDelete">
+                                Save
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+
+                <v-snackbar color="success" outlined v-model="snackbar" :timeout="timeout">
+                    {{ text }}
+                </v-snackbar>
+
+            </v-main>
+
+            <v-footer padless>
+                <v-col class="text-center" cols="12">
+                    {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
+                </v-col>
+            </v-footer>
+
+        </v-app>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="./assets/js/index.js"></script>
+</body>
+
+</html>
