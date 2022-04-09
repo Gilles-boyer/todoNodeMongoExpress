@@ -15,7 +15,8 @@ module.exports.viewTask = (req, res, next) => {
 module.exports.store = (req, res) => {
     if (req.method == 'POST') {
         var task = new Task({
-            title: req.body.title
+            title: req.body.title,
+            priority: req.body.priorityId
         });
         task.save((err, task) => {
             if (err) return res.status(500).send(err);

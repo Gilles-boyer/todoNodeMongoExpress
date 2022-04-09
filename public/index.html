@@ -32,26 +32,28 @@
                         </v-btn>
                     </v-toolbar>
 
-                    <v-list>
-                        <v-list-item v-for="(folder, index) in folders" :key="folder._id">
+                    <v-list v-for="(folder, indexFolder) in folders" :key="folder._id">
+                        <v-subheader inset>{{ folder.label }}</v-subheader>
+                        <v-list-item v-for="(task, indexTask) in folder.tasks" :key="task._id">
                             <v-list-item-content>
-                                <v-list-item-title v-text="folder.title"></v-list-item-title>
+                                <v-list-item-title v-text="task.title"></v-list-item-title>
 
-                                <v-list-item-subtitle v-text="folder.date"></v-list-item-subtitle>
+                                <v-list-item-subtitle v-text="task.date"></v-list-item-subtitle>
                             </v-list-item-content>
 
                             <v-list-item-action class="d-flex flex-row mb-6">
-                                <v-btn icon v-bind:href="/task/+ folder._id">
+                                <v-btn icon v-bind:href="/task/+ task._id">
                                     <v-icon color="grey darken-1">mdi-eye</v-icon>
                                 </v-btn>
-                                <v-btn icon @click="OpenModalModify(folder, index)">
+                                <v-btn icon @click="OpenModalModify(task, indexTask, indexFolder)">
                                     <v-icon color="grey darken-1">mdi-cog</v-icon>
                                 </v-btn>
-                                <v-btn icon @click="OpenModalDelete(folder, index)">
+                                <v-btn icon @click="OpenModalDelete(task, indexTask, indexFolder)">
                                     <v-icon color="red darken-1">mdi-delete</v-icon>
                                 </v-btn>
                             </v-list-item-action>
                         </v-list-item>
+                        <v-divider inset></v-divider>
                     </v-list>
                 </v-card>
 
@@ -66,6 +68,17 @@
                                 <v-row>
                                     <v-col cols="12">
                                         <v-text-field v-model="taskLabel" label="Tache" required></v-text-field>
+                                    </v-col>
+                                    <v-col cols="11" v-if="!inputNewPriority">
+                                        <v-select v-on:change="test()" :items="itemsFolder" item-text="label" v-model="itemsFolderSelected" label="Priorité" deletable-chips return-object></v-select>
+                                    </v-col>
+                                    <v-col cols="12" v-if="inputNewPriority">
+                                        <v-text-field v-model="inputPriority" label="Nouvelle Priorité" required></v-text-field>
+                                    </v-col>
+                                    <v-col cols="1" v-if="!inputNewPriority" align-self="center">
+                                        <v-btn icon @click="inputNewPriority = true">
+                                            <v-icon>mdi-plus-circle</v-icon>
+                                        </v-btn>
                                     </v-col>
                                 </v-row>
                             </v-container>
